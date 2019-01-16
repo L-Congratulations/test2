@@ -26,10 +26,10 @@ module.exports = (req,res,next)=>{
     }
     // 通过判断客户端发送的信息和服务器session中的数据来确定是否给客户端返回信息
 
-    const query = Object.assign({},req.needToken,{
-        accesstoken:(needToken && req.method === 'GET') ? user.accesstoken : ''
-    })
-    if(query.needToken) delete query.needToken
+    // const query = Object.assign(req.query,req.needToken,{
+    //     accesstoken:(needToken && req.method === 'GET') ? user.accesstoken : ''
+    // })
+    // if(query.needToken) delete query.needToken
     // 因为我们不确定客户端传过来的信息是否包含query（如果是get请求是可能存在query参数的）
     // 而且我们规定如果用户登录的信息需要登录才能访问时需要传递一个自定义的needToken参数来说明，
     // 所以query需要传，而且我们不能直接将客户端传递过来的的参数直接发送给真实接口，
@@ -47,12 +47,19 @@ module.exports = (req,res,next)=>{
     // 即使请求的接口不需要这个参数的话也没关系,使用queryString方法将json格式的数据转化成formData格式
     // 将{'accesstoken':'xxxxxxx'}转化成了：'accesstoken=xxxxxx',通过三元语句判断，
     // 如果请求的方法是post，并且需要传递accesstoken，那么就从session中取出token并赋值，如果不需要就传递一个空字符串
+    //
 
+    // console.log(query)
+    // console.log(data)
+    console.log('-------------------------')
     console.log(`${baseUrl}${path}`)
-
+    console.log(req.query)
+    console.log(req.method)
+    console.log(data)
+    console.log('------------------------')
     axios(`${baseUrl}${path}`,{
         method:req.method,
-        param:query,
+        params:req.query,
         data:data,
         headers:{
             'Content-Type':'application/x-www-form-urlencoded'
